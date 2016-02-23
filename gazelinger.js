@@ -1,7 +1,7 @@
 (function() {
-  let eyex;
-  let eyetribe;
-  let mygaze;
+  var eyex;
+  var eyetribe;
+  var mygaze;
 
   try {
     eyex = require('eyex');
@@ -45,15 +45,17 @@
           if(eyex && eyex.ping) {
             data = eyex.ping()
           } else if(eyetribe && eyetribe.ping) {
+            // TODO ...
           } else if(mygaze && mygaze.ping) {
+            // TODO ...
           }
 
           var message = { raw: data };
           message.ts = (new Date()).getTime();
 
           if(data.end_ts && data.begin_ts && data.end_ts > data.begin_ts && data.end_ts != last_linger_ts) {
-            console.log("linger duration " + (data.end_ts - data.begin_ts));
-            console.log("time since last " + (data.end_ts - last_linger_ts));
+//             console.log("linger duration " + (data.end_ts - data.begin_ts));
+//             console.log("time since last " + (data.end_ts - last_linger_ts));
             last_linger_ts = data.end_ts;
 
             message = { raw: data};
@@ -75,8 +77,8 @@
             run_callbacks(message);
 
             gaze_history.push({
-              x: message.x,
-              y: message.y,
+              x: message.screenX,
+              y: message.screenY,
               ts: message.ts
             });
           
@@ -127,6 +129,8 @@
       callbacks.push(callback);
     },
     stop_listening: function() {
+      // TODO: support multiple listeners
+      callbacks = [];
       window.clearInterval(poll);
     }
   };
