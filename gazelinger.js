@@ -39,7 +39,7 @@
   var gazelinger = {
     listen: function(callback) {
       if(!poll) {
-        poll = window.setInterval(function() {
+        poll = setInterval(function() {
           if(callbacks.length == 0) { return; }
           var data = null;
           if(eyex && eyex.ping) {
@@ -131,7 +131,7 @@
     stop_listening: function() {
       // TODO: support multiple listeners
       callbacks = [];
-      window.clearInterval(poll);
+      clearInterval(poll);
     }
   };
   module.exports = gazelinger;

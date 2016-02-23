@@ -29,10 +29,10 @@
   var eye_gaze = {
     listen: function() {
       ipcRenderer.send('eye-gaze-subscribe');
-    };
+    },
     stop_listening: function() {
       ipcRenderer.send('eye-gaze-unsubscribe');
-    };
+    }
   };
   
   jq(document).on('mousemove touchstart', function(event) {
