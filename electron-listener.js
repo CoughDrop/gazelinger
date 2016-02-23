@@ -34,10 +34,13 @@
       ipcRenderer.send('eye-gaze-unsubscribe');
     };
   };
-  if(window.capabilities) {
-    window.capabilities.eye_gaze.listen = eye_gaze.listen;
-    window.capabilities.eye_gaze.stop_listening = eye_gaze.stop_listening;
-    window.capabilities.eye_gaze.available = true;
-  }
+  
+  jq(document).on('mousemove touchstart', function(event) {
+    if(event.screenX && event.clientX) {
+      window.screenInnerOffsetY = event.screenY - event.clientY;
+      window.screenInnerOffsetX = event.screenX - event.clientX;
+    }
+  });
+  
   module.exports = eye_gaze;
 })()
