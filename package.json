@@ -1,0 +1,15 @@
+{
+  "name": "gazelinger",
+  "version": "0.0.1",
+  "description": "Listen for gaze events from common eye tracking libraries",
+  "main": "gazelinger.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [
+    "gaze",
+    "eyex"
+  ],
+  "author": "CoughDrop, Inc.",
+  "license": "MIT"
+}
