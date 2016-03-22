@@ -67,7 +67,7 @@
           if(mygaze && mygaze.ping) {
             // TODO ...
           }
-          data.result = data.eyex || data.eyetribe || data.mygaze;
+          data.result = data.eyex || data.eyetribe || data.mygaze || {};
           data = data.result;
           
 

@@ -1,6 +1,6 @@
 {
   "name": "gazelinger",
-  "version": "0.0.3",
+  "version": "0.0.4",
   "description": "Listen for gaze events from common eye tracking libraries",
   "main": "gazelinger.js",
   "scripts": {
