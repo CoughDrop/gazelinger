@@ -1,6 +1,6 @@
 {
   "name": "gazelinger",
-  "version": "0.0.1",
+  "version": "0.0.2",
   "description": "Listen for gaze events from common eye tracking libraries",
   "main": "gazelinger.js",
   "scripts": {
@@ -8,7 +8,9 @@
   },
   "keywords": [
     "gaze",
-    "eyex"
+    "eyex",
+    "eyetribe",
+    "eye tracking"
   ],
   "author": "CoughDrop, Inc.",
   "license": "MIT",

@@ -20,7 +20,11 @@
     }
   }
   if(eyetribe) {
-    // TODO...
+    try {
+      eyetribe.setup();
+    } catch(e) {
+      eyetribe = null;
+    }
   }
   if(mygaze) {
     // TODO...
@@ -38,6 +42,9 @@
   };
   var gazelinger = {
     listen: function(callback) {
+      if(eyetribe && eyetribe.listen) {
+        eyetribe.listen();
+      }
       if(!poll) {
         poll = setInterval(function() {
           if(callbacks.length == 0) { return; }
@@ -45,7 +52,7 @@
           if(eyex && eyex.ping) {
             data = eyex.ping()
           } else if(eyetribe && eyetribe.ping) {
-            // TODO ...
+            data = eyetribe.ping();
           } else if(mygaze && mygaze.ping) {
             // TODO ...
           }
@@ -132,6 +139,9 @@
       // TODO: support multiple listeners
       callbacks = [];
       clearInterval(poll);
+      if(eyetribe && eyetribe.stop_listening) {
+        eyetribe.stop_listening();
+      }
     }
   };
   module.exports = gazelinger;
