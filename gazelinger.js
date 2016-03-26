@@ -153,6 +153,7 @@
       // TODO: support multiple listeners
       callbacks = [];
       clearInterval(poll);
+      poll = null;
       if(eyetribe && eyetribe.stop_listening) {
         eyetribe.stop_listening();
       }
