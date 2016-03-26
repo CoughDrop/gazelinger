@@ -14,6 +14,10 @@ a `gazelinger` event.
 
 ### Technical Notes
 
+#### Installation
+
+`npm install https://github.com/coughdrop/gazelinger.git`
+
 #### Averaging algorithm
 - Sample every 20ms
 - Prune any samples more than 200ms in the past
