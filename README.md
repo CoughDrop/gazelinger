@@ -12,11 +12,27 @@ in an Electron app. This listener script resolves any differences in screen rati
 the native client and the browser, finds the element underneath the linger, and triggers
 a `gazelinger` event.
 
-### Technical Notes
-
-#### Installation
+### Installation and Usage
 
 `npm install https://github.com/coughdrop/gazelinger.git`
+
+```
+var gazelinger = require('gazelinger');
+
+gazelinger.listen(function(data) {
+  console.log(data);
+});
+
+gazelinger.stop_listening();
+```
+
+
+### Technical Notes
+
+Without any of the related eye tracking libraries (coughdrop/eyex, coughdrop/eyetribe, etc.)
+this won't do much since it doesn't do anything on its own. When a supported eye tracker library
+is installed and an eye tracker is present, gazelinger polls for eye events and returns them
+to the specified callback.
 
 #### Averaging algorithm
 - Sample every 20ms
@@ -32,9 +48,37 @@ triggering events, it's very likely that the on-screen linger icon will be on to
 actual DOM element that should be triggered. If you give your linger icon the id of 
 `linger` then it will be properly ignored.
 
-Keep in mind that `electron-listener` assumes it's run in the window process and that 
-`gazelinger` has been required in the main process with `gazelinger.something` being
-called to listen for inter-process communication. It also required jQuery currently.
+```
+var listener = require('electron-listener'); // run in electron browser process
+
+listener.listen();
+
+listener.stop_listening();
+```
+
+Keep in mind that `electron-listener` assumes it's run in the window process with jQuery included
+ and that `gazelinger` has been required in the main process with code similar to this:
+
+```
+var gazelinger = require('gazelinger');
+const ipcMain = require('electron').ipcMain;
+var sender = null;
+
+ipcMain.on('eye-gaze-subscribe', function(event, args) {
+  sender = event.sender;
+  gazelinger.listen(function(data) {
+    if(sender) {
+      sender.send('eye-gaze-data', JSON.stringify(data));
+    }
+  });
+});
+
+ipcMain.on('eye-gaze-unsubscribe', function(event, args) {
+  sender = null;
+  gazelinger.stop_listening();
+});
+```
+
 
 ### License
 
