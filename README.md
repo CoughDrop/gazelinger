@@ -54,6 +54,16 @@ var listener = require('electron-listener'); // run in electron browser process
 listener.listen();
 
 listener.stop_listening();
+
+// this element will automagically be ignored when triggering linger events
+var linger = document.getElementById('linger');
+document.addEventListener('gazelinger', function(event) {
+  var elem = event.target;
+  var width = $(elem).width();
+  var height = $(elem).height();
+  elem.style.left = (event.clientX - (width / 2)) + 'px';
+  elem.style.top = (event.clientY - (height / 2)) + 'px';
+});
 ```
 
 Keep in mind that `electron-listener` assumes it's run in the window process with jQuery included
