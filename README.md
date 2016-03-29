@@ -14,7 +14,14 @@ a `gazelinger` event.
 
 ### Installation and Usage
 
-`npm install https://github.com/coughdrop/gazelinger.git`
+```bash
+# install gazelinger
+npm install https://github.com/coughdrop/gazelinger.git
+
+# install any compatible eye tracking libraries you want to use
+npm install https://github.com/coughdrop/eyex.git
+npm install https://github.com/coughdrop/eyetribe.git
+```
 
 ```
 var gazelinger = require('gazelinger');
@@ -29,13 +36,14 @@ gazelinger.stop_listening();
 
 ### Technical Notes
 
-Without any of the related eye tracking libraries (coughdrop/eyex, coughdrop/eyetribe, etc.)
+Without any of the related eye tracking libraries ([coughdrop/eyex](https://github.com/coughdrop/eyex), 
+[coughdrop/eyetribe](https://github.com/coughdrop/eyetribe), etc.)
 this won't do much since it doesn't do anything on its own. When a supported eye tracker library
 is installed and an eye tracker is present, gazelinger polls for eye events and returns them
 to the specified callback.
 
 #### Averaging algorithm
-- Sample every 20ms
+- Sample every 50ms
 - Prune any samples more than 200ms in the past
 - Compute the median of the remaining samples
 - Remove any samples more than 50px away from the median

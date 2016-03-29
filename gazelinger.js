@@ -42,10 +42,11 @@
   var gazelinger = {
     listen: function(callback) {
       if(eyetribe && eyetribe.listen) {
+        // idempotent
         eyetribe.listen();
       }
       if(!poll) {
-        poll = setInterval(function() {
+        var poll = function() {
           if(callbacks.length == 0) { return; }
           var data = {};
           if(eyex && eyex.ping) {
@@ -145,14 +146,17 @@
               }
             }
           }
-        }, 20);
+          // I was using setInterval, but it was causing a queue backlog, I thought this would help.
+          setTimeout(poll, 50);
+        };
+        setTimeout(poll, 50);
       }
       callbacks.push(callback);
     },
     stop_listening: function() {
       // TODO: support multiple listeners
       callbacks = [];
-      clearInterval(poll);
+      clearTimeout(poll);
       poll = null;
       if(eyetribe && eyetribe.stop_listening) {
         eyetribe.stop_listening();
