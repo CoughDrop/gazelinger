@@ -123,14 +123,16 @@
               var midx = xs[Math.ceil(xs.length / 2)];
               var ys = gaze_history.sort(function (a, b) { return b.y - a.y });
               var midy = ys[Math.ceil(ys.length / 2)];
-          
-              // temporarily remove outliers
+  
+              // won't enter this until there are at least 2 events        
               if (midx && midy) {
                 midx = midx.x;
                 midy = midy.y;
             
+                // temporarily remove outliers
                 var filtered_history = gaze_history.filter(function (e) { return (Math.abs(e.x - midx) < 50) && (Math.abs(e.y - midy) < 50); });
-                if (filtered_history.length > 0) {
+                // wait until there are at least 3 clustered events, which means a minimum of 150ms
+                if (filtered_history.length > 2) {
                   var biggest_dist = 0;
                   lasts.history = gaze_history[0].ts;
                   filtered_history.forEach(function (e) { biggest_dist = Math.max(biggest_dist, e.ts - lasts.history); lasts.history - e.ts; });
