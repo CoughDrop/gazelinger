@@ -136,7 +136,7 @@
                   filtered_history.forEach(function (e) { biggest_dist = Math.max(biggest_dist, e.ts - lasts.history); lasts.history - e.ts; });
               
                   // if there are no significant time gaps, compute a new middle and trigger a linger event
-                  if (biggest_dist <= 50) {
+                  if (biggest_dist <= 60) {
                     var mean_x = 0;
                     var mean_y = 0;
                     filtered_history.forEach(function (e) { mean_x = mean_x + e.x; mean_y = mean_y + e.y; });
@@ -158,9 +158,9 @@
             }
           }
           // I was using setInterval, but it was causing a queue backlog, I thought this would help.
-          setTimeout(poll, 50);
+          setTimeout(poll, 45);
         };
-        setTimeout(poll, 50);
+        setTimeout(poll, 45);
       }
       callbacks.push({callback: callback, level: level});
     },
