@@ -34,13 +34,20 @@
   var lasts = {};
   var gaze_history = [];
   var callbacks = [];
+  var any_averaged = false;
   var run_callbacks = function(message) {
-    callbacks.forEach(function(cb) {
-      cb(message);
+    callbacks.forEach(function(obj) {
+      if(message.type == 'over' && obj.level == 'noisy') {
+        obj.callback(message);
+      } else if(message.type == 'linger' && obj.level == 'averaged') {
+        obj.callback(message);
+      }
     });
   };
   var gazelinger = {
-    listen: function(callback) {
+    listen: function(callback, level) {
+      level = level || 'noisy';
+      if(level == 'averaged') { any_averaged = true; }
       if(eyetribe && eyetribe.listen) {
         // idempotent
         eyetribe.listen();
@@ -86,9 +93,9 @@
             message.screenY = data.data_y; // = (data.data_y / ratio) - (window.screenInnerOffsetY || window.screenY);
             message.duration = (data.end_ts - data.begin_ts);
             message.type = 'linger';
-            run_callbacks(message);
+//            run_callbacks(message);
           }
-          if(data.gaze_ts && data.gaze_ts != lasts.gaze) {
+          if(data.gaze_ts && data.gaze_ts != lasts.gaze && any_averaged) {
             lasts.gaze = data.gaze_ts;
             message = { raw: data};
             message.ts = (new Date()).getTime();
@@ -151,11 +158,12 @@
         };
         setTimeout(poll, 50);
       }
-      callbacks.push(callback);
+      callbacks.push({callback: callback, level: level});
     },
     stop_listening: function() {
       // TODO: support multiple listeners
       callbacks = [];
+      any_averaged = false;
       clearTimeout(poll);
       poll = null;
       if(eyetribe && eyetribe.stop_listening) {

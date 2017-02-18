@@ -4,6 +4,7 @@
 
   var ratio = window.devicePixelRatio || 1.0;
   var jq = window.jQuery || window.$ || (window.Ember && window.Ember.$);
+  var listen_level = 'noisy';
 
   ipcRenderer.on('eye-gaze-data', function(event, arg) {
     var elem = document.getElementById('linger');
@@ -11,8 +12,12 @@
     var data = JSON.parse(arg);
     data.x = (data.screenX / ratio) - (window.screenInnerOffsetX || window.screenX);
     data.y = (data.screenY / ratio) - (window.screenInnerOffsetY || window.screenY);
-    if(data.type == 'linger') {
-      var e = jq.Event('gazelinger');
+    var valid = false;
+    if(data.type == 'linger' && listen_level == 'averaged') { valid = true; }
+    if(data.type == 'over' && listen_level == 'noisy') { valid = true; }
+    
+    if(valid) {
+      var e = jq.Event('gazelinger'); // TODO: this should really be gazeover for non-linger events
       e.clientX = data.x;
       e.clientY = data.y;
       e.duration = data.duration;
@@ -27,8 +32,9 @@
     }
   });
   var eye_gaze = {
-    listen: function() {
-      ipcRenderer.send('eye-gaze-subscribe');
+    listen: function(level) {
+      ipcRenderer.send('eye-gaze-subscribe', level);
+      listen_level = level;
     },
     stop_listening: function() {
       ipcRenderer.send('eye-gaze-unsubscribe');

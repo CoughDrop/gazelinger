@@ -59,7 +59,7 @@ actual DOM element that should be triggered. If you give your linger icon the id
 ```
 var listener = require('electron-listener'); // run in electron browser process
 
-listener.listen();
+listener.listen('noisy'); // default is 'noisy', also accepts 'averaged'
 
 listener.stop_listening();
 
@@ -84,7 +84,7 @@ var sender = null;
 
 ipcMain.on('eye-gaze-subscribe', function(event, args) {
   sender = event.sender;
-  gazelinger.listen(function(data) {
+  gazelinger.listen(function(data, args[0]) {
     if(sender) {
       sender.send('eye-gaze-data', JSON.stringify(data));
     }
