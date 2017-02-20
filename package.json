@@ -1,24 +1,37 @@
 {
-  "name": "gazelinger",
-  "version": "0.0.6",
-  "description": "Listen for gaze events from common eye tracking libraries",
-  "main": "gazelinger.js",
-  "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
-  },
-  "keywords": [
-    "gaze",
-    "eyex",
-    "eyetribe",
-    "eye tracking"
+  "_args": [
+    [
+      "https://github.com/coughdrop/gazelinger.git",
+      "C:\\Users\\Brian\\Workspace\\coughdrop_desktop"
+    ]
   ],
-  "author": "CoughDrop, Inc.",
+  "author": {
+    "name": "CoughDrop, Inc."
+  },
+  "bugs": {
+    "url": "https://github.com/CoughDrop/gazelinger/issues"
+  },
+  "dependencies": {},
+  "description": "Listen for gaze events from common eye tracking libraries",
+  "devDependencies": {},
+  "homepage": "https://github.com/CoughDrop/gazelinger#readme",
+  "keywords": [
+    "eye tracking",
+    "eyetribe",
+    "eyex",
+    "gaze"
+  ],
   "license": "MIT",
+  "main": "gazelinger.js",
+  "name": "gazelinger",
+  "optionalDependencies": {},
+  "readmeFilename": "README.md",
   "repository": {
     "type": "git",
-    "url": "https://github.com/CoughDrop/gazelinger"
+    "url": "https://github.com/CoughDrop/gazelinger.git"
   },
   "scripts": {
     "install": "echo 'ok'"
-  }
+  },
+  "version": "0.0.7"
 }

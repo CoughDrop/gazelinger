@@ -15,7 +15,6 @@
     var valid = false;
     if(data.type == 'linger' && listen_level == 'averaged') { valid = true; }
     if(data.type == 'over' && listen_level == 'noisy') { valid = true; }
-    
     if(valid) {
       var e = jq.Event('gazelinger'); // TODO: this should really be gazeover for non-linger events
       e.clientX = data.x;
@@ -33,6 +32,7 @@
   });
   var eye_gaze = {
     listen: function(level) {
+      level = level || 'noisy';
       ipcRenderer.send('eye-gaze-subscribe', level);
       listen_level = level;
     },
