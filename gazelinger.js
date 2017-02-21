@@ -108,7 +108,7 @@
               lasts.eyegaze_edge = data.eyegaze_edge.gaze_ts;
             }
           }
-          data.result = data.eyex || data.eyetribe || data.mygaze || {};
+          data.result = data.eyex || data.eyetribe || data.mygaze || data.eyegaze_edge || {};
           data = data.result;
           
 
