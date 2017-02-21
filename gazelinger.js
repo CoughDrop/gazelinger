@@ -125,6 +125,7 @@
             message.screenX = data.data_x; //(data.data_x / ratio) - (window.screenInnerOffsetX || window.screenX);
             message.screenY = data.data_y; // = (data.data_y / ratio) - (window.screenInnerOffsetY || window.screenY);
             message.duration = (data.end_ts - data.begin_ts);
+            message.scaled = data.scaled !== false;
             message.type = 'linger';
 //            run_callbacks(message);
           }
@@ -135,6 +136,7 @@
             message.screenX = data.gaze_x; //(data.gaze_x / ratio) - (window.screenInnerOffsetX || window.screenX);
             message.screenY = data.gaze_y; //(data.gaze_y / ratio) - (window.screenInnerOffsetY || window.screenY);
             message.duration = 50;
+            message.scaled = data.scaled !== false;
             message.type = 'over';
             message.ts = data.gaze_ts;
             run_callbacks(message);
@@ -184,6 +186,7 @@
                     message.screenY = mean_y;
                     message.type = 'linger';
                     message.duration = filtered_history[filtered_history.length - 1].ts - filtered_history[0].ts;
+                    message.scaled = data.scaled !== false;
                     run_callbacks(message);
                     // slicing at index 3 means you will get at most a linger event every 150ms
                     gaze_history = gaze_history.slice(3, 50);

@@ -10,8 +10,9 @@
     var elem = document.getElementById('linger');
   
     var data = JSON.parse(arg);
-    data.x = (data.screenX / ratio) - (window.screenInnerOffsetX || window.screenX);
-    data.y = (data.screenY / ratio) - (window.screenInnerOffsetY || window.screenY);
+    var current_ratio = (data.scaled === false) ? 1.0 : ratio;
+    data.x = (data.screenX / current_ratio) - (window.screenInnerOffsetX || window.screenX);
+    data.y = (data.screenY / current_ratio) - (window.screenInnerOffsetY || window.screenY);
     var valid = false;
     if(data.type == 'linger' && listen_level == 'averaged') { valid = true; }
     if(data.type == 'over' && listen_level == 'noisy') { valid = true; }

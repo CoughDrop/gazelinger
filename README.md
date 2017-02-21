@@ -97,6 +97,14 @@ ipcMain.on('eye-gaze-unsubscribe', function(event, args) {
 });
 ```
 
+#### Gotchas
+
+The Eyegaze Edge library does not account for pixel density ratios. I haven't found a clean
+way to correct for this other than to check for it client-side. So when you get a message
+back from gazelinger, make sure to check the `scaled` attribute. If it's explicitly set to
+false then the coordinates will not match the coordinates from other libraries unless you
+multiple by `window.devicePixelRatio`.
+
 
 ### License
 
