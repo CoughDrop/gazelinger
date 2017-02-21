@@ -2,6 +2,9 @@
   var eyex;
   var eyetribe;
   var mygaze;
+  var eyegaze_edge;
+  var pending_edge;
+  var available = {};
 
   try {
     eyex = require('eyex');
@@ -12,9 +15,13 @@
   try {
     mygaze = require('mygaze');
   } catch(e) { }
+  try {
+    pending_edge = require('eyegaze_edge');
+  } catch(e) { }
   if(eyex) {
     try {
       eyex.setup();
+      available.eyex = true;
     } catch(e) {
       eyex = null;
     }
@@ -22,12 +29,25 @@
   if(eyetribe) {
     try {
       eyetribe.setup();
+      available.eyetribe = true;
     } catch(e) {
       eyetribe = null;
     }
   }
   if(mygaze) {
     // TODO...
+  }
+  if(pending_edge) {
+    try {
+      pending_edge.setup(function(res) {
+        if(res && res.ready) {
+          eyegaze_edge = pending_edge;
+          available.eyegaze_edge = true;
+        }
+      });
+    } catch(e) {
+      pending_edge = null;
+    }
   }
 
   var poll = null;
@@ -45,12 +65,17 @@
     });
   };
   var gazelinger = {
+    available: available,
     listen: function(callback, level) {
       level = level || 'noisy';
       if(level == 'averaged') { any_averaged = true; }
       if(eyetribe && eyetribe.listen) {
         // idempotent
         eyetribe.listen();
+      }
+      if(eyegaze_edge && eyegaze_edge.listen) {
+        // idempotent
+        eyegaze_edge.listen();
       }
       if(!poll) {
         var poll = function() {
@@ -74,6 +99,14 @@
           }
           if(mygaze && mygaze.ping) {
             // TODO ...
+          }
+          if(eyegaze_edge && eyegaze_edge.ping) {
+            data.eyegaze_edge = eyegaze_edge.ping();
+            if(data.eyegaze_edge && (data.eyegaze_edge.gaze_ts == 0 || lasts.eyegaze_edge == data.eyegaze_edge.gaze_ts)) {
+              data.eyegaze_edge = null;
+            } else if(data.eyegaze_edge) {
+              lasts.eyegaze_edge = data.eyegaze_edge.gaze_ts;
+            }
           }
           data.result = data.eyex || data.eyetribe || data.mygaze || {};
           data = data.result;
@@ -174,6 +207,17 @@
       poll = null;
       if(eyetribe && eyetribe.stop_listening) {
         eyetribe.stop_listening();
+      }
+      if(eyegaze_edge && eyegaze_edge.stop_listening) {
+        eyegaze_edge.stop_listening();
+      }
+    },
+    can_calibrate: function() {
+      return !!eyegaze_edge;
+    },
+    calibrate: function() {
+      if(eyegaze_edge) {
+        eyegaze_edge.calibrate();
       }
     }
   };
