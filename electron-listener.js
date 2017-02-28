@@ -6,6 +6,8 @@
   var jq = window.jQuery || window.$ || (window.Ember && window.Ember.$);
   var listen_level = 'noisy';
 
+  var delivery_debounce = null;
+  var dropped_points = [];
   ipcRenderer.on('eye-gaze-data', function(event, arg) {
     var elem = document.getElementById('linger');
   
@@ -17,18 +19,34 @@
     if(data.type == 'linger' && listen_level == 'averaged') { valid = true; }
     if(data.type == 'over' && listen_level == 'noisy') { valid = true; }
     if(valid) {
-      var e = jq.Event('gazelinger'); // TODO: this should really be gazeover for non-linger events
-      e.clientX = data.x;
-      e.clientY = data.y;
-      e.duration = data.duration;
-      e.ts = data.ts;
+      if(delivery_debounce) {
+        dropped_points.push(data);
+      } else {
+        delivery_debounce = setTimeout(function() {
+          delivery_debounce = null;
+        }, 75);
+        var e = jq.Event('gazelinger'); // TODO: this should really be gazeover for non-linger events
+        if(dropped_points.length > 0) {
+          for(var idx = 0; idx < dropped_points.length; idx++) {
+            data.x = data.x + dropped_points[idx].x;
+            data.y = data.y + dropped_points[idx].y;
+          }
+          data.x = data.x / (dropped_points.length + 1);
+          data.y = data.y / (dropped_points.length + 1);
+          dropped_points = [];
+        }
+        e.clientX = data.x;
+        e.clientY = data.y;
+        e.duration = data.duration;
+        e.ts = data.ts;
 
-      var elem_left = elem && elem.style && elem.style.left;
-      if (elem) { elem.style.left = '-1000px'; }
-      e.target = document.elementFromPoint(data.x, data.y);
-      if (elem) { elem.style.left = elem_left; }
+        var elem_left = elem && elem.style && elem.style.left;
+        if (elem) { elem.style.left = '-1000px'; }
+        e.target = document.elementFromPoint(data.x, data.y);
+        if (elem) { elem.style.left = elem_left; }
 
-      jq(e.target).trigger(e);
+        jq(e.target).trigger(e);
+      }
     }
   });
   var eye_gaze = {

@@ -55,23 +55,14 @@
   var gaze_history = [];
   var callbacks = [];
   var any_averaged = false;
-  var delivery_debounce = null;
-  var deliveries = {};
   var run_callbacks = function(message) {
-    deliveries[message.type] = message;
-    if(!delivery_debounce) {
-      delivery_devounce = setTimeout(function() {
-        callbacks.forEach(function(obj) {
-          if(obj.level == 'noisy' && deliveries.over) {
-            obj.callback(deliveries.over);
-          } else if(obj.level == 'averaged' && deliveries.linger) {
-            obj.callback(deliveries.linger);
-          }
-        });
-        deliveries = {};
-        delivery_debounce = null;
-      }, 75);
-    }
+    callbacks.forEach(function(obj) {
+      if(message.type == 'over' && obj.level == 'noisy') {
+        obj.callback(message);
+      } else if(message.type == 'linger' && obj.level == 'averaged') {
+        obj.callback(message);
+      }
+    });
   };
   var gazelinger = {
     available: available,
