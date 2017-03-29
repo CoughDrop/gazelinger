@@ -108,7 +108,14 @@
               lasts.eyegaze_edge = data.eyegaze_edge.gaze_ts;
             }
           }
-          data.result = data.eyex || data.eyetribe || data.mygaze || data.eyegaze_edge || {};
+          data.result = {};
+          var keys = ['eyex', 'eyetribe', 'mygaze', 'eyegaze_edge'];
+          for(var idx = 0; idx < keys.length; idx++) {
+            if(data[keys[idx]]) {
+              data.result = data[keys[idx]];
+              data.result.hardware = keys[idx];
+            }
+          }
           data = data.result;
           
 
