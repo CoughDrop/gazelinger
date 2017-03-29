@@ -49,6 +49,13 @@
       }
     }
   });
+  ipcRenderer.on('eye-gaze-calibrate', function(event, args) {
+    var data = JSON.parse(arg);
+    if(calibrate_check_callback) {
+      calibrate_check_callback(!!arg.calibratable);
+    }
+  });
+  var calibrate_check_callback = null;
   var eye_gaze = {
     listen: function(level) {
       level = level || 'noisy';
@@ -57,6 +64,13 @@
     },
     stop_listening: function() {
       ipcRenderer.send('eye-gaze-unsubscribe');
+    },
+    calibrate: function() {
+      ipcRenderer.send('eye-gaze-calibrate');
+    },
+    calibratable: function(cb) {
+      calibrate_check_callback = cb;
+      ipcRenderer.send('eye-gaze-calibrate-check');
     }
   };
   
