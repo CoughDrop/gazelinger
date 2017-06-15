@@ -10,7 +10,7 @@
   var dropped_points = [];
   ipcRenderer.on('eye-gaze-status', function(event, arg) {
     var elem = document;
-    var data = JSON.parse(arg);
+    var data = arg;
     var e = jq.Event('eye-gaze-status');
     e.statuses = data;
     e.target = elem;
