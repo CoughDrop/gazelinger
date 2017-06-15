@@ -128,7 +128,7 @@
               lasts.eyex = data.eyex.gaze_ts;
               lasts.eyex_js = now;
             }
-            if(lasts.eyex_js && data.eyex.status && lasts.eyex_js < (now - (30 * 1000))) {
+            if(lasts.eyex_js && data.eyex && data.eyex.status && lasts.eyex_js < (now - (30 * 1000))) {
               data.eyex.status.dormant = true;
             }
           }
@@ -143,7 +143,7 @@
               lasts.eyetribe = data.eyetribe.gaze_ts
               lasts.eyetribe_js = now;
             }
-            if(lasts.eyetribe_js && data.eyetribe.status && lasts.eyetribe_js < (now - (30 * 1000))) {
+            if(lasts.eyetribe_js && data.eyetribe && data.eyetribe.status && lasts.eyetribe_js < (now - (30 * 1000))) {
               data.eyetribe.status.dormant = true;
             }
           }
@@ -161,10 +161,11 @@
               lasts.eyegaze_edge = data.eyegaze_edge.gaze_ts;
               lasts.eyegaze_edge_js = now;
             }
-            if(lasts.eyegaze_edge_js && data.eyegaze_edge.status && lasts.eyegaze_edge_js < (now - (30 * 1000))) {
+            if(lasts.eyegaze_edge_js && data.eyegaze_edge && data.eyegaze_edge.status && lasts.eyegaze_edge_js < (now - (30 * 1000))) {
               data.eyegaze_edge.status.dormant = true;
             }
           }
+          console.log(gazelinger.statuses);
           data.result = {};
           var keys = ['eyex', 'eyetribe', 'mygaze', 'eyegaze_edge'];
           for(var idx = 0; idx < keys.length; idx++) {
