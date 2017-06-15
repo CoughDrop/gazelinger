@@ -97,7 +97,7 @@
           if(eyex && eyex.ping) {
             data.eyex = eyex.ping();
             if(data.eyex && data.eyex.status) {
-              gazelinger.statuses.eyex = data.eyex.status;
+              gazelinger.statuses.eyex = {code: data.eyex.status};
               // If EyeX has disconnected or failed, try reconnecting a few times
               if(!lasts.give_up_eyex && (data.eyex.status == 5 || data.eyex.status == -1)) {
                 lasts.eyex_attempts = lasts.eyex_attempts || [];
@@ -128,14 +128,14 @@
               lasts.eyex = data.eyex.gaze_ts;
               lasts.eyex_js = now;
             }
-            if(lasts.eyex_js && data.eyex && data.eyex.status && lasts.eyex_js < (now - (30 * 1000))) {
-              data.eyex.status.dormant = true;
+            if(lasts.eyex_js && gazelinger.statuses.eyex && lasts.eyex_js < (now - (30 * 1000))) {
+              gazelinger.statuses.eyex.dormant = true;
             }
           }
           if(eyetribe && eyetribe.ping) {
             data.eyetribe = eyetribe.ping();
             if(data.eyetribe.status) {
-              gazelinger.statuses.eyetribe = data.eyetribe.status;
+              gazelinger.statuses.eyetribe = {code: data.eyetribe.status};
             }
             if(data.eyetribe && (data.eyetribe.gaze_ts == 0 || lasts.eyetribe == data.eyetribe.gaze_ts)) {
               data.eyetribe = null;
@@ -143,8 +143,8 @@
               lasts.eyetribe = data.eyetribe.gaze_ts
               lasts.eyetribe_js = now;
             }
-            if(lasts.eyetribe_js && data.eyetribe && data.eyetribe.status && lasts.eyetribe_js < (now - (30 * 1000))) {
-              data.eyetribe.status.dormant = true;
+            if(lasts.eyetribe_js && gazelinger.statuses.eyetribe && lasts.eyetribe_js < (now - (30 * 1000))) {
+              gazelinger.statuses.eyetribe.dormant = true;
             }
           }
           if(mygaze && mygaze.ping) {
@@ -153,7 +153,7 @@
           if(eyegaze_edge && eyegaze_edge.ping) {
             data.eyegaze_edge = eyegaze_edge.ping();
             if(data.eyegaze_edge && data.eyegaze_edge.status) {
-              gazelinger.statuses.eyegaze_edge = data.eyegaze_edge.status;
+              gazelinger.statuses.eyegaze_edge = {code: data.eyegaze_edge.status};
             }
             if(data.eyegaze_edge && (data.eyegaze_edge.gaze_ts == 0 || lasts.eyegaze_edge == data.eyegaze_edge.gaze_ts)) {
               data.eyegaze_edge = null;
@@ -161,8 +161,8 @@
               lasts.eyegaze_edge = data.eyegaze_edge.gaze_ts;
               lasts.eyegaze_edge_js = now;
             }
-            if(lasts.eyegaze_edge_js && data.eyegaze_edge && data.eyegaze_edge.status && lasts.eyegaze_edge_js < (now - (30 * 1000))) {
-              data.eyegaze_edge.status.dormant = true;
+            if(lasts.eyegaze_edge_js && gazelinger.statuses.eyegaze_edge && lasts.eyegaze_edge_js < (now - (30 * 1000))) {
+              gazelinger.statuses.eyegaze_edge.dormant = true;
             }
           }
           data.result = {};
