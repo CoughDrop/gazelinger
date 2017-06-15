@@ -15,7 +15,7 @@
     e.statuses = data;
     e.target = elem;
     jq(e.target).trigger(e);
-  };
+  });
   ipcRenderer.on('eye-gaze-data', function(event, arg) {
     var elem = document.getElementById('linger');
   
