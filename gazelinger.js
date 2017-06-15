@@ -165,7 +165,6 @@
               data.eyegaze_edge.status.dormant = true;
             }
           }
-          console.log(gazelinger.statuses);
           data.result = {};
           var keys = ['eyex', 'eyetribe', 'mygaze', 'eyegaze_edge'];
           for(var idx = 0; idx < keys.length; idx++) {

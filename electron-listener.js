@@ -46,7 +46,7 @@
         e.clientX = data.x;
         e.clientY = data.y;
         e.duration = data.duration;
-        e.eyegaze_hardware = data.hardware;
+        e.eyegaze_hardware = data.raw && data.raw.hardware;
         e.ts = data.ts;
 
         var elem_left = elem && elem.style && elem.style.left;
