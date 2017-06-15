@@ -8,6 +8,14 @@
 
   var delivery_debounce = null;
   var dropped_points = [];
+  ipcRenderer.on('eye-gaze-status', function(event, arg) {
+    var elem = document;
+    var data = JSON.parse(arg);
+    var e = jq.Event('eye-gaze-status');
+    e.statuses = data;
+    e.target = elem;
+    jq(e.target).trigger(e);
+  };
   ipcRenderer.on('eye-gaze-data', function(event, arg) {
     var elem = document.getElementById('linger');
   

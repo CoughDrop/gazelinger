@@ -65,15 +65,27 @@
     });
   };
   var gazelinger = {
+    statuses: {
+    },
     available: available,
     listen: function(callback, level) {
       level = level || 'noisy';
       if(level == 'averaged') { any_averaged = true; }
-      if(eyetribe && eyetribe.listen) {
+      if(eyetribe && eyetribe.listen && available.eyetribe) {
         // idempotent
         eyetribe.listen();
       }
-      if(eyegaze_edge && eyegaze_edge.listen) {
+      if(eyex && available.eyex) {
+        try { eyex.teardown(); } catch(e) { }
+        setTimeout(function() {
+          try { 
+            eyex.setup(); 
+            lasts.give_up_eyex = false;
+          } catch(e) { }
+
+        }, 500);
+      }
+      if(eyegaze_edge && eyegaze_edge.listen && available.eyegaze_edge) {
         // idempotent
         eyegaze_edge.listen();
       }
@@ -81,20 +93,58 @@
         var poll = function() {
           if(callbacks.length == 0) { return; }
           var data = {};
+          var now = (new Date()).getTime();
           if(eyex && eyex.ping) {
             data.eyex = eyex.ping();
+            if(data.eyex && data.eyex.status) {
+              gazelinger.statuses.eyex = data.eyex.status;
+              // If EyeX has disconnected or failed, try reconnecting a few times
+              if(!lasts.give_up_eyex && (data.eyex.status == 5 || data.eyex.status == -1)) {
+                lasts.eyex_attempts = lasts.eyex_attempts || [];
+                var attempts = [];
+                // After 5 failed attempts within a 2-minute window, go ahead and give up
+                for(var idx = 0; idx < lasts.eyex_attempts.length; idx++) {
+                  if(lasts.eyex_attempts[idx] > (now - (120 * 1000))) {
+                    attempts.push(lasts.eyex_attempts[idx]);
+                  }
+                }
+                lasts.eyex_attempts.push(now);
+                if(lasts.eyex_attempts.length > 5) {
+                  lasts.give_up_eyex = true;
+                } else {
+                  try { eyex.teardown(); } catch(e) { }
+                  setTimeout(function() {
+                    try { 
+                      eyex.setup();
+                      lasts.give_up_eyex = false;
+                    } catch(e) { }
+                  }, 500);
+                }
+              }
+            }
             if(data.eyex && (data.eyex.gaze_ts == 0 || lasts.eyex == data.eyex.gaze_ts)) {
               data.eyex = null;
             } else if(data.eyex) {
               lasts.eyex = data.eyex.gaze_ts;
+              lasts.eyex_js = now;
+            }
+            if(lasts.eyex_js && data.eyex.status && lasts.eyex_js < (now - (30 * 1000))) {
+              data.eyex.status.dormant = true;
             }
           }
           if(eyetribe && eyetribe.ping) {
             data.eyetribe = eyetribe.ping();
+            if(data.eyetribe.status) {
+              gazelinger.statuses.eyetribe = data.eyetribe.status;
+            }
             if(data.eyetribe && (data.eyetribe.gaze_ts == 0 || lasts.eyetribe == data.eyetribe.gaze_ts)) {
               data.eyetribe = null;
             } else if(data.eyetribe){
               lasts.eyetribe = data.eyetribe.gaze_ts
+              lasts.eyetribe_js = now;
+            }
+            if(lasts.eyetribe_js && data.eyetribe.status && lasts.eyetribe_js < (now - (30 * 1000))) {
+              data.eyetribe.status.dormant = true;
             }
           }
           if(mygaze && mygaze.ping) {
@@ -102,10 +152,17 @@
           }
           if(eyegaze_edge && eyegaze_edge.ping) {
             data.eyegaze_edge = eyegaze_edge.ping();
+            if(data.eyegaze_edge && data.eyegaze_edge.status) {
+              gazelinger.statuses.eyegaze_edge = data.eyegaze_edge.status;
+            }
             if(data.eyegaze_edge && (data.eyegaze_edge.gaze_ts == 0 || lasts.eyegaze_edge == data.eyegaze_edge.gaze_ts)) {
               data.eyegaze_edge = null;
             } else if(data.eyegaze_edge) {
               lasts.eyegaze_edge = data.eyegaze_edge.gaze_ts;
+              lasts.eyegaze_edge_js = now;
+            }
+            if(lasts.eyegaze_edge_js && data.eyegaze_edge.status && lasts.eyegaze_edge_js < (now - (30 * 1000))) {
+              data.eyegaze_edge.status.dormant = true;
             }
           }
           data.result = {};
