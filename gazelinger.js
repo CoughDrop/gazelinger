@@ -85,13 +85,15 @@
 
         }, 500);
       }
-      if(eyegaze_edge && eyegaze_edge.listen && available.eyegaze_edge) {
-        // idempotent
-        eyegaze_edge.listen();
-      }
       if(!poll) {
         var poll = function() {
           if(callbacks.length == 0) { return; }
+          // Race condition since eyegaze edge setup check takes a few second, if you start listening
+          // too soon then you'll miss this listen call unless it's part of the polling loop.
+          if(eyegaze_edge && eyegaze_edge.listen && available.eyegaze_edge && !eyegaze_edge.listening) {
+            // idempotent
+            eyegaze_edge.listen();
+          }
           var data = {};
           var now = (new Date()).getTime();
           if(eyex && eyex.ping) {
