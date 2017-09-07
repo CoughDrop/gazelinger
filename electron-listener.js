@@ -59,9 +59,9 @@
     }
   });
   ipcRenderer.on('eye-gaze-calibrate', function(event, args) {
-    var data = JSON.parse(arg);
+    var data = JSON.parse(args);
     if(calibrate_check_callback) {
-      calibrate_check_callback(!!arg.calibratable);
+      calibrate_check_callback(!!data.calibratable);
     }
   });
   var calibrate_check_callback = null;
