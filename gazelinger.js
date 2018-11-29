@@ -1,19 +1,11 @@
 (function() {
   var eyex;
-  var eyetribe;
-  var mygaze;
   var eyegaze_edge;
   var pending_edge;
   var available = {};
 
   try {
     eyex = require('eyex');
-  } catch(e) { }
-  try {
-    eyetribe = require('eyetribe');
-  } catch(e) { }
-  try {
-    mygaze = require('mygaze');
   } catch(e) { }
   try {
     pending_edge = require('eyegaze_edge');
@@ -25,17 +17,6 @@
     } catch(e) {
       eyex = null;
     }
-  }
-  if(eyetribe) {
-    try {
-      eyetribe.setup();
-      available.eyetribe = true;
-    } catch(e) {
-      eyetribe = null;
-    }
-  }
-  if(mygaze) {
-    // TODO...
   }
   if(pending_edge) {
     try {
@@ -71,10 +52,6 @@
     listen: function(callback, level) {
       level = level || 'noisy';
       if(level == 'averaged') { any_averaged = true; }
-      if(eyetribe && eyetribe.listen && available.eyetribe) {
-        // idempotent
-        eyetribe.listen();
-      }
       if(eyex && available.eyex) {
         try { eyex.teardown(); } catch(e) { }
         setTimeout(function() {
@@ -134,24 +111,6 @@
               gazelinger.statuses.eyex.dormant = true;
             }
           }
-          if(eyetribe && eyetribe.ping) {
-            data.eyetribe = eyetribe.ping();
-            if(data.eyetribe.status) {
-              gazelinger.statuses.eyetribe = {code: data.eyetribe.status};
-            }
-            if(data.eyetribe && (data.eyetribe.gaze_ts == 0 || lasts.eyetribe == data.eyetribe.gaze_ts)) {
-              data.eyetribe = null;
-            } else if(data.eyetribe){
-              lasts.eyetribe = data.eyetribe.gaze_ts
-              lasts.eyetribe_js = now;
-            }
-            if(lasts.eyetribe_js && gazelinger.statuses.eyetribe && lasts.eyetribe_js < (now - (30 * 1000))) {
-              gazelinger.statuses.eyetribe.dormant = true;
-            }
-          }
-          if(mygaze && mygaze.ping) {
-            // TODO ...
-          }
           if(eyegaze_edge && eyegaze_edge.ping) {
             data.eyegaze_edge = eyegaze_edge.ping();
             if(data.eyegaze_edge && data.eyegaze_edge.status) {
@@ -168,7 +127,7 @@
             }
           }
           data.result = {};
-          var keys = ['eyex', 'eyetribe', 'mygaze', 'eyegaze_edge'];
+          var keys = ['eyex', 'eyegaze_edge'];
           for(var idx = 0; idx < keys.length; idx++) {
             if(data[keys[idx]]) {
               data.result = data[keys[idx]];
@@ -274,9 +233,6 @@
       any_averaged = false;
       clearTimeout(poll);
       poll = null;
-      if(eyetribe && eyetribe.stop_listening) {
-        eyetribe.stop_listening();
-      }
       if(eyegaze_edge && eyegaze_edge.stop_listening) {
         eyegaze_edge.stop_listening();
       }
