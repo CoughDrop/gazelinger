@@ -1,6 +1,6 @@
 (function() {
   var req = (window.requireNode || window.require);
-  const ipcRenderer = req('electron').ipcRenderer;
+  const ipcRenderer = window.ipcRenderer || req('electron').ipcRenderer;
 
   var ratio = window.devicePixelRatio || 1.0;
   var jq = window.jQuery || window.$ || (window.Ember && window.Ember.$);
@@ -32,7 +32,7 @@
       } else {
         delivery_debounce = setTimeout(function() {
           delivery_debounce = null;
-        }, 75);
+        }, 50);
         var e = jq.Event('gazelinger'); // TODO: this should really be gazeover for non-linger events
         if(dropped_points.length > 0) {
           for(var idx = 0; idx < dropped_points.length; idx++) {
@@ -66,6 +66,15 @@
   });
   var calibrate_check_callback = null;
   var eye_gaze = {
+    init: function(jQuery) {
+      jq = jQuery;
+      jq(document).on('mousemove touchstart', function(event) {
+        if(event.screenX && event.clientX) {
+          window.screenInnerOffsetY = event.screenY - event.clientY;
+          window.screenInnerOffsetX = event.screenX - event.clientX;
+        }
+      });
+    },
     listen: function(level) {
       level = level || 'noisy';
       ipcRenderer.send('eye-gaze-subscribe', level);
@@ -82,13 +91,6 @@
       ipcRenderer.send('eye-gaze-calibrate-check');
     }
   };
-  
-  jq(document).on('mousemove touchstart', function(event) {
-    if(event.screenX && event.clientX) {
-      window.screenInnerOffsetY = event.screenY - event.clientY;
-      window.screenInnerOffsetX = event.screenX - event.clientX;
-    }
-  });
-  
+    
   module.exports = eye_gaze;
 })()
