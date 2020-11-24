@@ -9,6 +9,7 @@
   var delivery_debounce = null;
   var dropped_points = [];
   ipcRenderer.on('eye-gaze-status', function(event, arg) {
+    jq = jq || window.jQuery || window.$ || (window.Ember && window.Ember.$);
     var elem = document;
     var data = arg;
     var e = jq.Event('eye-gaze-status');
@@ -33,6 +34,7 @@
         delivery_debounce = setTimeout(function() {
           delivery_debounce = null;
         }, 50);
+        jq = jq || window.jQuery || window.$ || (window.Ember && window.Ember.$);
         var e = jq.Event('gazelinger'); // TODO: this should really be gazeover for non-linger events
         if(dropped_points.length > 0) {
           for(var idx = 0; idx < dropped_points.length; idx++) {
