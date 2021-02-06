@@ -24,6 +24,9 @@
     var current_ratio = (data.scaled === false) ? 1.0 : ratio;
     data.x = (data.screenX / current_ratio) - (window.screenInnerOffsetX || window.screenX);
     data.y = (data.screenY / current_ratio) - (window.screenInnerOffsetY || window.screenY);
+    if(localStorage.raw_gaze == 'true') {
+      console.log('GAZE', data.screenX, data.screenY);
+    }
     var valid = false;
     if(data.type == 'linger' && listen_level == 'averaged') { valid = true; }
     if(data.type == 'over' && listen_level == 'noisy') { valid = true; }
@@ -47,6 +50,8 @@
         }
         e.clientX = data.x;
         e.clientY = data.y;
+        e.rawX = data.screenX;
+        e.rawY = data.screenY;
         e.duration = data.duration;
         e.eyegaze_hardware = data.raw && data.raw.hardware;
         e.ts = data.ts;
