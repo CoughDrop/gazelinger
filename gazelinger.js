@@ -214,7 +214,11 @@
                     message.scaled = data.scaled !== false;
                     run_callbacks(message);
                     // slicing at index 3 means you will get at most a linger event every 150ms
-                    gaze_history = gaze_history.slice(3, 50);
+                    if(gaze_history.length > 45) {
+                      gaze_history = gaze_history.slice(0 - (gaze_history.length - 3));
+                    } else {
+                      gaze_history = gaze_history.slice(3, 50);
+                    }
                   }
                 }
               }
