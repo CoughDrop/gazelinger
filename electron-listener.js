@@ -2,7 +2,6 @@
   var req = (window.requireNode || window.require);
   const ipcRenderer = window.ipcRenderer || req('electron').ipcRenderer;
 
-  var ratio = window.devicePixelRatio || 1.0;
   var jq = window.jQuery || window.$ || (window.Ember && window.Ember.$);
   var listen_level = 'noisy';
 
@@ -18,6 +17,7 @@
     jq(e.target).trigger(e);
   });
   ipcRenderer.on('eye-gaze-data', function(event, arg) {
+    var ratio = window.devicePixelRatio || 1.0;
     var elem = document.getElementById('linger');
   
     var data = JSON.parse(arg);
